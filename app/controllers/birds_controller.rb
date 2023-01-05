@@ -1,6 +1,16 @@
 class BirdsController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response
 
+  rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
+
+  # rest of controller actions...
+
+  private
+
+  def render_unprocessable_entity_response(invalid)
+    render json: { errors: invalid.record.errors }, status: :unprocessable_entity
+  end
+
   # GET /birds
   def index
     birds = Bird.all
